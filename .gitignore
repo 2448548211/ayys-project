@@ -28,5 +28,3 @@ hs_err_pid*
 src/test
 src/main/resource
 target
-.gitignore
-pom.xml
