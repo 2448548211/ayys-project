@@ -1,8 +1,9 @@
 package com.xlibaba.ayys.utils;
 
-import java.io.IOException;
+import com.alibaba.druid.pool.DruidDataSourceFactory;
+
+import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -13,28 +14,30 @@ import java.util.Properties;
  * @since JDK 1.8
  */
 public class DBUtil {
-    /*
-    volatile关键字，这是为了防止指令重排序,单例模式设计中可能会出现这个bug
-    单例模式可能会指向一个空的实例化对象（指向有极低概率先于初始化构造器）
-    */
-    private static volatile DBUtil dbUtil;
-    private static String CLASSNAME = null;
-    private static String URL = null;
-    private static String USERNAME = null;
-    private static String PASSWORD = null;
+    /**
+     *  当前类的单例对象
+     *  说明：volatile关键字，这是为了防止指令重排序,单例模式设计中可能会出现这个bug
+     *  单例模式可能会指向一个空的实例化对象（指向有极低概率先于初始化构造器）
+     */
+    private static volatile DBUtil dbUtil = null;
+    private static final String DB_PROPERTIES_NAME = "jdbc.properties";
+    private static DataSource ds = null;
     static{
         try {
             Properties properties = new Properties();
             //通过类加载器的相对路径加载对应的配置文件
-            properties.load(DBUtil.class.getClassLoader().getResourceAsStream("jdbc.properties"));
-            CLASSNAME = properties.getProperty("classname");
-            URL = properties.getProperty("url");
-            USERNAME = properties.getProperty("username");
-            PASSWORD = properties.getProperty("password");
-        } catch (IOException e) {
-            e.printStackTrace();
+            properties.load(DBUtil.class.getClassLoader().getResourceAsStream(DB_PROPERTIES_NAME));
+            ds = DruidDataSourceFactory.createDataSource(properties);
+        } catch (Exception e) {
+            System.out.println("创建数据库连接池失败");
         }
     }
+    /**
+     * 获取当前类的单例对象
+     * @return      当前类的单例对象
+     * @author ChenWang
+     * @date 2020/10/19 15:54
+     */
     public static DBUtil getDbUtil(){
         //单例模式的懒汉实现--线程安全
         //通过设置同步代码块，使用DCL双检查锁机制
@@ -58,10 +61,9 @@ public class DBUtil {
     public Connection getConnection() {
         Connection conn = null;
         try {
-            Class.forName(CLASSNAME);
-            conn = DriverManager.getConnection(URL,USERNAME,PASSWORD);
-        } catch (SQLException | ClassNotFoundException throwables) {
-            throwables.printStackTrace();
+            conn = ds.getConnection();
+        } catch (SQLException e) {
+            System.out.println("创建数据库连接失败");
         }
         return conn;
     }
