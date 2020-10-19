@@ -33,7 +33,7 @@ public class BaseDAOImpl<T> implements IBaseDAO<T> {
     private static final String SPACE = " ";
     private static final String FROM = " FROM ";
     private static final String WHERE = " WHERE ";
-    private static final String EQUAL_SIGN = "=? ";
+    private static final  String EQUAL_SIGN = "=? ";
     private static final String QUE_MARK = "?";
     private static final String COMMA = ",";
     private static final String AND = " AND ";
