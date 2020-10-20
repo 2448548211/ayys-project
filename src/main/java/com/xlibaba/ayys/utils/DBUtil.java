@@ -3,8 +3,13 @@ package com.xlibaba.ayys.utils;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Field;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -20,8 +25,9 @@ public class DBUtil {
      *  单例模式可能会指向一个空的实例化对象（指向有极低概率先于初始化构造器）
      */
     private static volatile DBUtil dbUtil = null;
-    private static final String DB_PROPERTIES_NAME = "jdbc.properties";
     private static DataSource ds = null;
+    private static final String DB_PROPERTIES_NAME = "jdbc.properties";
+    private static final String EMPTY_STRING = "";
     static{
         try {
             Properties properties = new Properties();
@@ -83,5 +89,116 @@ public class DBUtil {
                 }
             }
         }
+    }
+
+    /**
+     *
+     * @param sql
+     * @param params
+     * @return
+     */
+    public int executeUpdate(String sql, Object... params){
+        int count = 0;
+        Connection conn = getConnection();
+        PreparedStatement ps = null;
+        try {
+            //设置成自动提交事务,将该连接的所有 SQL语句都转成一个事务进行提交
+            conn.setAutoCommit(false);
+            ps = conn.prepareStatement(sql);
+            setParams(ps, params);
+            //使用Statement对象发送SQL语句
+            count = ps.executeUpdate();
+            getConnection().commit();
+        } catch (SQLException e) {
+            try {
+                //事务回滚并且释放数据库资源
+                conn.rollback();
+            } catch (SQLException throwables) {
+                System.out.println("回滚，释放资源失败");
+            }
+        } finally {
+            closeAll(ps, conn);
+        }
+        return count;
+    }
+    private void setParams(PreparedStatement ps, Object... params) throws SQLException {
+        if (params != null && params.length > 0) {
+            for (int i = 0; i < params.length; i++) {
+                ps.setObject(i+1, params[i]);
+            }
+        }
+    }
+
+    /**
+     *
+     * @param sql
+     * @param clazz
+     * @param params
+     * @param <T>
+     * @return
+     */
+    public <T> List<T> excuteQuery(String sql,Class<T> clazz, Object...params){
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rSet = null;
+        List<T> list = null;
+        try{
+            conn = getConnection();
+            ps = conn.prepareStatement(sql);
+            setParams(ps,params);
+            rSet = ps.executeQuery();
+            Field[] fields = clazz.getDeclaredFields();
+            T t = null;
+            list = new ArrayList<>();
+            while(rSet.next()){
+                t = clazz.newInstance();
+                for (Field field:fields){
+                    field.setAccessible(true);
+                    field.set(t,rSet.getObject(getColName(field)));
+                }
+                list.add(t);
+            }
+        } catch (SQLException | InstantiationException | IllegalAccessException throwables) {
+            throwables.printStackTrace();
+            System.out.println("网络延迟，请稍后再试");
+        }finally {
+            closeAll(rSet,ps,conn);
+        }
+        return list;
+    }
+
+    /**
+     *
+     * @param field
+     * @return
+     */
+    private String getColName(Field field){
+        FieldColName annotation = field.getDeclaredAnnotation(FieldColName.class);
+        return (annotation==null||EMPTY_STRING.equals(annotation.value()))?field.getName(): annotation.value();
+    }
+
+    /**
+     * 获取包含所有字段名的字符串 (字符串前后包含空格)
+     * @param clz   实体类反射对象
+     * @param <T>
+     * @return
+     */
+    public <T>  String getColNameClass(Class<T> clz){
+        //拼接sql语句
+        StringBuffer sql_Name = new StringBuffer(" ");
+        //通过反射对象获取所有属性对象
+        Field[] fields = clz.getDeclaredFields();
+        String name = null;
+        for (Field f : fields) {
+            FieldColName ann = f.getAnnotation(FieldColName.class);
+            if (ann == null || ann.value().equals("")){
+                name = f.getName();
+            } else {
+                name = ann.value();
+            }
+            sql_Name = sql_Name.append(name).append(",");
+        }
+        sql_Name.deleteCharAt(sql_Name.lastIndexOf(","));
+        return sql_Name.toString();
     }
 }

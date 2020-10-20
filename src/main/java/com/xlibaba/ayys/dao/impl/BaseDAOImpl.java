@@ -40,6 +40,7 @@ public class BaseDAOImpl<T> implements IBaseDAO<T> {
     private static final int FIRST = 0;
     private static final String UPDATE = " UPDATE ";
     private static final String SET = " SET ";
+
     public int delete(Class<T> tClass,T t){
         return commonUpdate(DELETE,tClass,null,null);
     }
