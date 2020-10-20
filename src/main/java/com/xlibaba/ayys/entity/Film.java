@@ -1,6 +1,9 @@
 package com.xlibaba.ayys.entity;
 
+import com.xlibaba.ayys.utils.ClassTableName;
+import com.xlibaba.ayys.utils.FieldColName;
 
+@ClassTableName(value="film")
 public class Film {
 
   private String id;
@@ -8,16 +11,24 @@ public class Film {
   private String name;
   private String desc;
   private String actor;
+  @FieldColName(value = "is_used")
   private long isUsed;
+  @FieldColName(value = "is_checked")
   private long isChecked;
+  @FieldColName(value = "is_published")
   private long isPublished;
+  @FieldColName(value = "cate_log_id")
   private long cateLogId;
+  @FieldColName(value = "loc_id")
   private long locId;
+  @FieldColName(value = "on_decade")
   private long onDecade;
+  @FieldColName(value = "type_id")
   private long typeId;
+  @FieldColName(value = "create_time")
   private java.sql.Timestamp createTime;
+  @FieldColName(value = "expired_time")
   private java.sql.Timestamp expiredTime;
-
 
   public String getId() {
     return id;

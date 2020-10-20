@@ -1,6 +1,8 @@
 package com.xlibaba.ayys.entity;
 
+import com.xlibaba.ayys.utils.ClassTableName;
 
+@ClassTableName(value = "manager")
 public class Manager {
 
   private long id;

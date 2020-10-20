@@ -1,6 +1,8 @@
 package com.xlibaba.ayys.entity;
 
+import com.xlibaba.ayys.utils.ClassTableName;
 
+@ClassTableName(value = "information")
 public class Information {
 
   private long id;

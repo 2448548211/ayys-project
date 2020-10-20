@@ -23,7 +23,7 @@ public class BaseResponseEntity<T> {
      * @author ChenWang
      * @date 2020/10/13 20:02
      */
-    public static <T> BaseResponseEntity<T> success(T data){
+    public BaseResponseEntity<T> success(T data){
         return success(SUCCESS_CODE,SUCCESS_MSG,data);
     }
     /**
@@ -35,7 +35,7 @@ public class BaseResponseEntity<T> {
      * @author ChenWang
      * @date 2020/10/13 20:02
      */
-    public static <T> BaseResponseEntity<T> success(int status,String msg,T data){
+    public BaseResponseEntity<T> success(int status,String msg,T data){
         BaseResponseEntity<T> entity = new BaseResponseEntity<>();
         entity.setCode(status);
         entity.setMsg(msg);
@@ -48,7 +48,7 @@ public class BaseResponseEntity<T> {
      * @author ChenWang
      * @date 2020/10/13 20:00
      */
-    public static <T> BaseResponseEntity<T> error(){
+    public BaseResponseEntity<T> error(){
         return error(ERROR_CODE,ERROR_MSG);
     }
     /**
@@ -59,7 +59,7 @@ public class BaseResponseEntity<T> {
      * @author ChenWang
      * @date 2020/10/13 20:00
      */
-    public static <T> BaseResponseEntity<T> error(int status,String msg){
+    public BaseResponseEntity<T> error(int status,String msg){
         BaseResponseEntity<T> entity = new BaseResponseEntity<>();
         entity.setCode(status);
         entity.setMsg(msg);

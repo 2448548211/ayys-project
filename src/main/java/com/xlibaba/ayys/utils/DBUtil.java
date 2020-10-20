@@ -27,7 +27,7 @@ public class DBUtil {
     private static volatile DBUtil dbUtil = null;
     private static DataSource ds = null;
     private static final String DB_PROPERTIES_NAME = "jdbc.properties";
-    private static final String EMPTY_STRING = "";
+    private static final String EMPTY_STRING = "" ;
     static{
         try {
             Properties properties = new Properties();

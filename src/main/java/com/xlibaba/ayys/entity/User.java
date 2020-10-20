@@ -1,6 +1,8 @@
 package com.xlibaba.ayys.entity;
 
+import com.xlibaba.ayys.utils.ClassTableName;
 
+@ClassTableName(value = "user")
 public class User {
 
   private long id;
@@ -8,7 +10,7 @@ public class User {
   private String password;
   private String gender;
   private long phone;
-  private String emial;
+  private String email;
   private long addrId;
   private long isDelete;
   private long isUsed;
@@ -61,12 +63,12 @@ public class User {
   }
 
 
-  public String getEmial() {
-    return emial;
+  public String getEmail() {
+    return email;
   }
 
-  public void setEmial(String emial) {
-    this.emial = emial;
+  public void setEmail(String email) {
+    this.email = email;
   }
 
 
