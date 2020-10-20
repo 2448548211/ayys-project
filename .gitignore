@@ -28,3 +28,5 @@ hs_err_pid*
 src/test
 src/main/resource
 target
+src/main/resources
+test

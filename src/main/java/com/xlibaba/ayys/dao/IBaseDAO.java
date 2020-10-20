@@ -10,14 +10,18 @@ import java.util.List;
  */
 public interface IBaseDAO<T>{
     int update(Class<T> tClass, T t);
-    public int update(Class<T> tClass, boolean[] cols, boolean[] terms, Object... objs);
+
+    int update(Class<T> tClass, boolean[] cols, boolean[] terms, Object... objs);
 
     int insertSingle(Class<T> tClass, T t);
 
     int commonUpdate(String mul, Class<T> tClass, boolean[] cols, boolean[] terms, Object... objs);
 
     T selectById(Class<T> tClass, String id);
+
     List<T> selectAll(Class<T> tClass);
+
     List<T> selectAll(Class<T> tClass, boolean[] terms, Object... objs);
+
     List<T> selectExecute(Class<T> tClass, boolean getSingle, boolean[] cols, boolean[] terms, Object... objs);
 }

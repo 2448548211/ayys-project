@@ -40,9 +40,11 @@ public class BaseDAOImpl<T> implements IBaseDAO<T> {
     private static final int FIRST = 0;
     private static final String UPDATE = " UPDATE ";
     private static final String SET = " SET ";
+
     public int delete(Class<T> tClass,T t){
         return commonUpdate(DELETE,tClass,null,null);
     }
+
     public int deleteById(Class<T> tClass,String id){
         boolean[] terms = new boolean[tClass.getDeclaredFields().length];
         terms[0] = true;
@@ -51,6 +53,7 @@ public class BaseDAOImpl<T> implements IBaseDAO<T> {
         }
         return commonUpdate(DELETE,tClass,null,terms,id);
     }
+
     public int delete(Class<T> tClass,boolean[] terms,Object...objs){
         return commonUpdate(DELETE,tClass,null,terms,objs);
     }
@@ -122,7 +125,7 @@ public class BaseDAOImpl<T> implements IBaseDAO<T> {
     @Override
     public int commonUpdate(String mul, Class<T> tClass, boolean[] cols, boolean[] terms, Object... objs){
         int rSet = 0;
-        StringBuffer sql=null;
+        StringBuffer sql = null;
         Connection conn = null;
         PreparedStatement ps = null;
         switch(mul){
@@ -132,7 +135,7 @@ public class BaseDAOImpl<T> implements IBaseDAO<T> {
         }
         try {
             conn = DBUtil.getDbUtil().getConnection();
-            if (null==sql){
+            if (null == sql){
                 System.err.println("sql error");
                 System.exit(0);
             }

@@ -75,7 +75,7 @@ public class DBUtil {
     }
     /**
      * 释放资源
-     * @param closeables    指定的需要关闭的资源
+     * @param closeables  指定的需要关闭的资源
      * @author ChenWang
      * @date 2020/10/15 19:53
      */
